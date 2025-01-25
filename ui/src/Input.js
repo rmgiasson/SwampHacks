@@ -34,6 +34,13 @@ const Input = () => {
     }));
   };
 
+  const handleButtonClick = () => {
+    // Log the current values of the selected audio file and dropdown option
+    console.log('Button Clicked!');
+    console.log('Selected Audio File:', audioFile ? audioFile.name : 'None');
+    console.log('Selected Option:', selectedOption || 'None');
+  };
+
   return (
     <div className="input-container">
       <h2 className="header-text">Input Audio and Select Instrument</h2>
@@ -60,10 +67,15 @@ const Input = () => {
       </select>
 
       <div className="recent-inputs">
-        <h3 className="recent-header">Recent Inputs:</h3>
+        <h3 className="recent-header">Inputs:</h3>
         <p>Audio File: {recentInputs.audioFile ? recentInputs.audioFile.name : 'None'}</p>
         <p>Selected Option: {recentInputs.selectedOption || 'None'}</p>
       </div>
+
+      <button onClick={handleButtonClick} className="action-button">
+        Submit
+      </button>
+
     </div>
   );
 };
