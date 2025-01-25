@@ -1,45 +1,35 @@
-import subprocess
-from music21 import converter
+from music21 import stream, note, environment, metadata
 
-def midi_to_musicxml(midi_path, musicxml_path):
-    """Convert MIDI file to MusicXML format."""
-    try:
-        # Parse the MIDI file
-        score = converter.parse(midi_path)
-        
-        # Write the score to MusicXML
-        score.write('musicxml', fp=musicxml_path)
-        print(f"MusicXML saved to: {musicxml_path}")
+# Set the path to MuseScore 4
+us = environment.UserSettings()
+us['musescoreDirectPNGPath'] = r"C:\\Program Files\\MuseScore 4\bin\\MuseScore4.exe"
+
+print("MuseScore path updated to:", us['musescoreDirectPNGPath'])
+
+
+def create_sheet_music_from_notes(note_list, output_path):
+    # Create a music21 stream
+    score = stream.Stream()
+
+    score.metadata = metadata.Metadata()
+    score.metadata.title = "Skibidi Ohio"
+    score.metadata.composer = "SwampHacks X"
     
+    # Add notes to the stream
+    for n in note_list:
+        try:
+            score.append(note.Note(n))
+        except Exception as e:
+            print(f"Error adding note {n}: {e}")
+    
+    # Save the sheet music as PDF
+    try:
+        score.write('musicxml.pdf', output_path)
+        print(f"Sheet music PDF saved to: {output_path}")
     except Exception as e:
-        print(f"Error converting MIDI to MusicXML: {e}")
+        print(f"Error saving sheet music as PDF: {e}")
 
-
-def musicxml_to_pdf(musicxml_path, pdf_path):
-    """Convert MusicXML file to PDF using MuseScore CLI."""
-    try:
-        # Call MuseScore CLI to convert MusicXML to PDF
-        subprocess.run(['musescore', musicxml_path, '-o', pdf_path], check=True)
-        print(f"PDF saved to: {pdf_path}")
-    
-    except subprocess.CalledProcessError as e:
-        print(f"Error converting MusicXML to PDF: {e}")
-
-
-def midi_to_pdf(midi_path, pdf_path):
-    """Convert MIDI file directly to PDF sheet music."""
-    try:
-        # Convert MIDI to MusicXML
-        musicxml_path = 'temp.musicxml'
-        midi_to_musicxml(midi_path, musicxml_path)
-        
-        # Convert MusicXML to PDF
-        musicxml_to_pdf(musicxml_path, pdf_path)
-        print(f"Sheet music PDF created: {pdf_path}")
-    
-    except Exception as e:
-        print(f"Error in conversion pipeline: {e}")
-
-
-# Example usage
-midi_to_pdf('penes.mid', 'penes.pdf')
+# Example usage:
+notes = ['C4', 'D4', 'E4', 'F4', 'G4']
+output_pdf = 'sheet_music_notes.pdf'
+create_sheet_music_from_notes(notes, output_pdf)
