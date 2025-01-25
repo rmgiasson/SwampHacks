@@ -1,0 +1,81 @@
+/* input.css - Styling for a sleek, "rizzy" look */
+
+/* General Layout */
+.input-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #2e2e2e;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  
+  .header-text {
+    font-size: 24px;
+    text-align: center;
+    color: #00bcd4;
+  }
+  
+  .audio-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #444;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .audio-input:focus {
+    outline: none;
+    background-color: #666;
+  }
+  
+  .dropdown-menu {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #444;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .dropdown-menu:focus {
+    outline: none;
+    background-color: #666;
+  }
+  
+  .file-info {
+    font-size: 14px;
+    color: #00bcd4;
+    margin-top: 10px;
+  }
+  
+  .recent-inputs {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #333;
+    border-radius: 5px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .recent-header {
+    font-size: 18px;
+    color: #00bcd4;
+  }
+  
+  .recent-inputs p {
+    font-size: 14px;
+    color: #bbb;
+  }
+  
+  /* Add hover effects for interactivity */
+  .audio-input:hover,
+  .dropdown-menu:hover {
+    background-color: #555;
+  }
+  
