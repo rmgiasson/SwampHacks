@@ -3,13 +3,18 @@
 /* General Layout */
 .input-container {
     max-width: 500px;
-    margin: 0 auto;
+    margin: -15% auto 0;
     padding: 20px;
     border-radius: 10px;
     background-color: #2e2e2e;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    color: rgb(255, 255, 255);
     font-family: 'Courier New', Courier, monospace;
+    justify-content: center; 
+    align-items: center;
+    margin-left: 3%;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
   }
   
   .header-text {
@@ -19,18 +24,17 @@
   }
   
   .audio-input {
-    width: 100%;
+    width: 95%;
     padding: 10px;
     margin: 10px 0;
     border: none;
     border-radius: 5px;
     background-color: #444;
-    color: rgb(255, 255, 255);
+    color: white;
     font-size: 16px;
   }
   
   .audio-input:focus {
-    outline: none;
     background-color: #666;
   }
   
@@ -73,7 +77,6 @@
     color: #bbb;
   }
   
-  /* Add hover effects for interactivity */
   .audio-input:hover,
   .dropdown-menu:hover {
     background-color: #555;
@@ -92,6 +95,6 @@
   }
   
   button.action-button:hover {
-    background-color: #00bcd4;
+    background-color: #21a7b8;
   }
   

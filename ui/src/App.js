@@ -7,8 +7,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Input />
-        <Output />
+        <Input/>
+        <Output audioFile = "ohio.mp3" pdfFile = "Amongus.pdf"/>
       </header>
     </div>
   );
