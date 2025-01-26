@@ -16,6 +16,7 @@ function App() {
   const [isPianoVisible, setIsPianoVisible] = useState(true);
   const [pdfFileUrl, setPdfFileUrl] = useState(null); // State for PDF file URL
   const [midiFileUrl, setMidiFileUrl] = useState(null); // State for MIDI file URL
+  const [lastModifiedTime, setLastModifiedTime] = useState(null); // State for last modified time of output.mid
 
   // Toggle Piano visibility
   const togglePiano = () => {
@@ -41,24 +42,28 @@ function App() {
     checkPdfFile();
   }, []);
 
-  // Check if the output.midi file exists and update the state
+  // Poll for changes to output.mid every few seconds
   useEffect(() => {
-    const checkMidiFile = async () => {
+    const interval = setInterval(async () => {
       try {
-        const response = await fetch('/output.midi');
+        const response = await fetch('/output.mid', { method: 'HEAD' });
         if (response.ok) {
-          setMidiFileUrl('/output.midi');
+          const newModifiedTime = response.headers.get('last-modified');
+          if (newModifiedTime && newModifiedTime !== lastModifiedTime) {
+            setLastModifiedTime(newModifiedTime);
+            setMidiFileUrl('/output.mid');
+          }
         } else {
           setMidiFileUrl(null);
         }
       } catch (error) {
         setMidiFileUrl(null);
-        console.error('Error checking for output.midi:', error);
+        console.error('Error checking for output.mid:', error);
       }
-    };
+    }, 5000); // Check every 5 seconds
 
-    checkMidiFile();
-  }, []);
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [lastModifiedTime]);
 
   // Function to handle file submission and update the PDF file URL
   const handleFileSubmission = async (file, instrument) => {
@@ -68,7 +73,7 @@ function App() {
       formData.append('instrument', instrument);
 
       // POST request to upload the file
-      const response = await fetch('http://localhost:3001/upload', {
+      const response = await fetch('http://127.0.0.1:8000/api/upload/', {
         method: 'POST',
         body: formData,
       });
@@ -76,7 +81,6 @@ function App() {
       if (!response.ok) {
         throw new Error('Failed to upload file');
       }
-      
     } catch (error) {
       console.error('Error during file submission:', error);
     }
@@ -95,7 +99,7 @@ function App() {
               <p>No PDF to display. Submit a file to generate the sheet music.</p>
             )}
           </div>
-          <Output fileId={fileId} />
+          <Output />
         </div>
         <div className="App-header2">
           <button onClick={togglePiano} className="toggle-piano-button">
@@ -105,7 +109,6 @@ function App() {
         </div>
       </header>
 
-      {/* Allow users to download PDF and WAV files dynamically */}
       <div className="file-links">
         {pdfFileUrl ? (
           <div>
@@ -116,6 +119,17 @@ function App() {
           </div>
         ) : (
           <p>No PDF to display. Submit a file to generate the sheet music.</p>
+        )}
+
+        {midiFileUrl ? (
+          <div>
+            <h3>MIDI</h3>
+            <a href={midiFileUrl} download={`output.mid`}>
+              Download MIDI
+            </a>
+          </div>
+        ) : (
+          <p>No MIDI to display. Submit a file to generate the MIDI.</p>
         )}
       </div>
     </div>

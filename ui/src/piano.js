@@ -4,7 +4,7 @@ import 'react-piano/dist/styles.css';
 import MidiPlayer from 'midi-player-js';
 import * as Tone from 'tone';
 
-const TwoOctaveKeyboard = () => {
+const TwoOctaveKeyboard = ({ midiFileUrl }) => {
   const firstNote = MidiNumbers.fromNote('C2'); // Start from middle C
   const lastNote = MidiNumbers.fromNote('B6'); // Two octaves up
   const keyboardShortcuts = KeyboardShortcuts.create({
@@ -13,10 +13,10 @@ const TwoOctaveKeyboard = () => {
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
 
-  const [activeNotes, setActiveNotes] = useState([]); // Highlighted keys
-  const [player, setPlayer] = useState(null); // MIDI player instance
-  const [synth, setSynth] = useState(null); // Synth instance
-  const [isPlaying, setIsPlaying] = useState(false); // Track playback state
+  const [activeNotes, setActiveNotes] = useState([]);
+  const [player, setPlayer] = useState(null);
+  const [synth, setSynth] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     // Initialize a Tone.js synthesizer
@@ -25,123 +25,76 @@ const TwoOctaveKeyboard = () => {
       envelope: {
         attack: 0.02,
         decay: 0.2,
-        sustain: 0.5,
-        release: 0.3,
+        sustain: 0.3,
+        release: 0.1, // Short release time for quick note-off behavior
       },
     }).toDestination();
     setSynth(newSynth);
 
-    // Initialize MIDI Player
     const midiPlayer = new MidiPlayer.Player((event) => {
-      console.log('MIDI Event:', event); // Debugging: Log all MIDI events
-
       if (event.name === 'Note on' && event.velocity > 0) {
         const midiNumber = event.noteNumber;
         const note = Tone.Frequency(midiNumber, 'midi').toNote();
         if (!activeNotes.includes(midiNumber)) {
-          setActiveNotes((prev) => [...prev, midiNumber]); // Highlight key
-          newSynth.triggerAttack(note); // Play note
-          console.log(`Playing Note On: ${note}`);
+          setActiveNotes((prev) => [...prev, midiNumber]);
+          newSynth.triggerAttack(note); // Play the note
         }
       }
-
       if (event.name === 'Note off' || (event.name === 'Note on' && event.velocity === 0)) {
         const midiNumber = event.noteNumber;
         const note = Tone.Frequency(midiNumber, 'midi').toNote();
-        setActiveNotes((prev) => prev.filter((n) => n !== midiNumber)); // Remove highlight
-        newSynth.triggerRelease(note); // Ensure note is released properly
-        console.log(`Releasing Note Off: ${note}`);
+        setActiveNotes((prev) => prev.filter((n) => n !== midiNumber));
+        newSynth.triggerRelease(note); // Release the note quickly
       }
     });
 
-    // Detect when the player finishes playing
-    midiPlayer.on('endOfFile', () => {
-      setIsPlaying(false); // Reset the play button highlight
-      console.log('Playback finished');
-    });
-
+    midiPlayer.on('endOfFile', () => setIsPlaying(false));
     setPlayer(midiPlayer);
 
-    // Clean up player and synth on unmount
     return () => {
       midiPlayer.stop();
       newSynth.dispose();
     };
   }, []);
 
-  const loadAndPlayMIDI = (file) => {
-    if (!player || !synth) return;
-
-    console.log(`Loading MIDI File: ${file.name}`);
-
-    // Stop and reset the previous playback
-    if (player) {
-      player.stop(); // Stop any existing playback
-    }
-    if (synth) {
-      synth.releaseAll(); // Release all active notes
-    }
-    setActiveNotes([]); // Reset highlighted notes
-    setIsPlaying(false); // Reset playback state
-
-    // Read and load the new MIDI file
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const arrayBuffer = e.target.result;
-      player.loadArrayBuffer(arrayBuffer);
-      console.log('MIDI File Loaded Successfully');
-      player.play(); // Automatically start playing the new file
-      setIsPlaying(true); // Highlight the play button
+  useEffect(() => {
+    const fetchAndPlayMidi = async () => {
+      if (midiFileUrl && player) {
+        const response = await fetch(midiFileUrl);
+        const arrayBuffer = await response.arrayBuffer();
+        player.loadArrayBuffer(arrayBuffer);
+        player.play();
+        setIsPlaying(true);
+      }
     };
-    reader.readAsArrayBuffer(file);
-  };
 
-  const playPlayback = async () => {
-    // Ensure the audio context is running
-    if (Tone.context.state !== 'running') {
-      await Tone.start();
-      console.log('Audio context started');
-    }
+    fetchAndPlayMidi();
+  }, [midiFileUrl, player]);
 
-    if (player && !player.isPlaying()) {
-      player.play();
-      console.log('Playback started');
-      setIsPlaying(true); // Highlight the Play button
-    }
-  };
-
-  const pausePlayback = () => {
-    if (player && player.isPlaying()) {
-      player.pause();
-      setIsPlaying(false); // Unhighlight the Play button
-      console.log('Playback paused');
-
-      // Stop all currently playing notes
-      synth.releaseAll(); // Clear all active notes on the synthesizer
-      setActiveNotes([]); // Clear highlighted keys
-    }
-  };
-
-  const stopPlayback = () => {
+  const restartPlayback = () => {
     if (player) {
       player.stop();
-      setIsPlaying(false); // Unhighlight the Play button
-      console.log('Playback stopped');
-
-      // Stop all currently playing notes
-      synth.releaseAll(); // Clear all active notes on the synthesizer
-      setActiveNotes([]);
+      player.play();
+      setIsPlaying(true);
     }
   };
+
+  const pauseOrResumePlayback = () => {
+    if (player) {
+      if (player.isPlaying()) {
+        player.pause();
+        setIsPlaying(false);
+        synth.releaseAll(); 
+      } else {
+        player.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+  
 
   return (
     <div style={{ padding: '20px' }}>
-      <input
-        type="file"
-        accept=".mid"
-        onChange={(e) => loadAndPlayMIDI(e.target.files[0])}
-        style={{ marginBottom: '20px' }}
-      />
       <Piano
         noteRange={{ first: firstNote, last: lastNote }}
         width={1200}
@@ -151,50 +104,25 @@ const TwoOctaveKeyboard = () => {
         keyboardShortcuts={keyboardShortcuts}
       />
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <button
-          onClick={() => playPlayback()}
-          style={{
-            backgroundColor: isPlaying ? '#21a7b8' : '#00bcd4',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginRight: '10px',
-          }}
-        >
-          Play
+        <button onClick={restartPlayback} style={buttonStyle}>
+          Restart
         </button>
-        <button
-          onClick={() => pausePlayback()}
-          style={{
-            backgroundColor: '#f0ad4e',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginRight: '10px',
-          }}
-        >
-          Pause
-        </button>
-        <button
-          onClick={() => stopPlayback()}
-          style={{
-            backgroundColor: '#d9534f',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Stop
+        <button onClick={pauseOrResumePlayback} style={buttonStyle}>
+          {isPlaying ? 'Pause' : 'Resume'}
         </button>
       </div>
     </div>
   );
+};
+
+const buttonStyle = {
+  backgroundColor: '#00bcd4',
+  color: 'white',
+  padding: '10px 20px',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer',
+  marginRight: '10px',
 };
 
 export default TwoOctaveKeyboard;
