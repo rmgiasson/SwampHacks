@@ -3,18 +3,18 @@
 /* General Layout */
 .input-container {
     max-width: 500px;
-    margin: -15% auto 0;
+    margin: 0% auto 0;
     padding: 20px;
     border-radius: 10px;
     background-color: #2e2e2e;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     font-family: 'Courier New', Courier, monospace;
-    justify-content: center; 
-    align-items: center;
+    justify-content: center;
     margin-left: 3%;
     margin-right: auto;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
   }
   
   .header-text {
@@ -24,7 +24,7 @@
   }
   
   .audio-input {
-    width: 95%;
+    width: 96%;
     padding: 10px;
     margin: 10px 0;
     border: none;
