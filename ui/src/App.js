@@ -26,6 +26,9 @@ function App() {
       <header className="App-header">
         <div className="App-header1">
           <Input/>
+          <div className="pdf-viewer-container">
+            <Viewer fileUrl="/final_review.pdf" />
+          </div>
           <Output audioFile = "ohio.mp3" pdfFile = "Amongus.pdf"/>
         </div>
         <div className="App-header2">
@@ -34,9 +37,7 @@ function App() {
           </button>
           {isPianoVisible && <Piano />}
         </div>
-        <div className="pdf-viewer-container">
-          <Viewer fileUrl="/final_review.pdf" />
-        </div>
+        
       </header>
     </div>
   );

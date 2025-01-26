@@ -30,23 +30,27 @@
     color: white;
   }
 
+    .pdf-viewer-container {
+      width: 100%; /* Or a fixed width like 600px */
+      max-width: 45%; /* Adjust as needed */
+      height: 450px; /* Set the desired height */
+      margin: 20px auto; /* Center it horizontally */
+      border: 1px solid #ccc; /* Optional: Add a border */
+      overflow: hidden; /* Hide overflow to prevent layout issues */
+      display: flex;
+      justify-content: space-between;
+      border: 5px solid #00bcd4;
+      border-radius: 15px;
+    }
+
   .App-header2{
     height: 100%; 
     align-items: center;
-    justify-content: space-between;;
+    justify-content: space-between;
     font-size: calc(10px + 2vmin);
     justify-content: center;
     display: flex;
     color: white;
-  }
-
-  .pdf-viewer-container {
-    width: 100%; /* Or a fixed width like 600px */
-    max-width: 800px; /* Adjust as needed */
-    height: 500px; /* Set the desired height */
-    margin: 0 auto; /* Center it horizontally */
-    border: 1px solid #ccc; /* Optional: Add a border */
-    overflow: hidden; /* Hide overflow to prevent layout issues */
   }
 
 .App-link {

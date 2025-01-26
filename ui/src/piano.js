@@ -154,7 +154,7 @@ const TwoOctaveKeyboard = () => {
         <button
           onClick={() => playPlayback()}
           style={{
-            backgroundColor: isPlaying ? '#4CAF50' : '#61dafb',
+            backgroundColor: isPlaying ? '#21a7b8' : '#00bcd4',
             color: 'white',
             padding: '10px 20px',
             border: 'none',
