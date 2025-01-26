@@ -5,8 +5,8 @@ import MidiPlayer from 'midi-player-js';
 import * as Tone from 'tone';
 
 const TwoOctaveKeyboard = ({ midiFileUrl }) => {
-  const firstNote = MidiNumbers.fromNote('C2'); // Start from middle C
-  const lastNote = MidiNumbers.fromNote('B6'); // Two octaves up
+  const firstNote = MidiNumbers.fromNote('C2'); 
+  const lastNote = MidiNumbers.fromNote('B6'); 
   const keyboardShortcuts = KeyboardShortcuts.create({
     firstNote,
     lastNote,
@@ -19,14 +19,13 @@ const TwoOctaveKeyboard = ({ midiFileUrl }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    // Initialize a Tone.js synthesizer
     const newSynth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: 'triangle' },
       envelope: {
         attack: 0.02,
         decay: 0.2,
         sustain: 0.3,
-        release: 0.1, // Short release time for quick note-off behavior
+        release: 0.1, 
       },
     }).toDestination();
     setSynth(newSynth);
@@ -37,14 +36,14 @@ const TwoOctaveKeyboard = ({ midiFileUrl }) => {
         const note = Tone.Frequency(midiNumber, 'midi').toNote();
         if (!activeNotes.includes(midiNumber)) {
           setActiveNotes((prev) => [...prev, midiNumber]);
-          newSynth.triggerAttack(note); // Play the note
+          newSynth.triggerAttack(note); 
         }
       }
       if (event.name === 'Note off' || (event.name === 'Note on' && event.velocity === 0)) {
         const midiNumber = event.noteNumber;
         const note = Tone.Frequency(midiNumber, 'midi').toNote();
         setActiveNotes((prev) => prev.filter((n) => n !== midiNumber));
-        newSynth.triggerRelease(note); // Release the note quickly
+        newSynth.triggerRelease(note); 
       }
     });
 

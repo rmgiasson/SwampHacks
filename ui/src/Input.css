@@ -1,6 +1,3 @@
-/* input.css - Styling for a sleek, "rizzy" look */
-
-/* General Layout */
 .input-container {
     max-width: 500px;
     margin: 0% auto 0;
@@ -25,7 +22,7 @@
   }
   
   .audio-input {
-    width: 95%;
+    width: 96%;
     padding: 10px;
     margin: 5px 0;
     border: none;

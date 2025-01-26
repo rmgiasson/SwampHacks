@@ -16,7 +16,7 @@ const Input = ({ onSubmit }) => {
 
   const handleSubmit = () => {
     if (audioFile && selectedOption) {
-      onSubmit(audioFile, selectedOption); // Pass file and instrument to App
+      onSubmit(audioFile, selectedOption); 
     } else {
       alert('Please select a file and instrument!');
     }
@@ -33,6 +33,10 @@ const Input = ({ onSubmit }) => {
         <option value="">Select an instrument</option>
         <option value="piano">Piano</option>
         <option value="harmonica">Harmonica</option>
+        <option value="trumpet">Trumpet</option>
+        <option value="flute">Flute</option>
+        <option value="cello">Cello</option>
+        <option value="guitar">Guitar</option>
       </select>
       <input
         type="file"

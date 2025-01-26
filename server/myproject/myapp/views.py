@@ -12,7 +12,6 @@ UPLOAD_FOLDER = 'uploads/'
 OUTPUT_FOLDER = 'outputs/'
 PUBLIC_FOLDER = '../../ui/public/'
 
-# Ensure these directories exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
@@ -39,17 +38,13 @@ def upload_file(request):
         filepath = os.path.join('../myproject/uploads', filepath)
         print(filepath, '<-----------------')
 
-        # Create the midi file
         note_values, midi_path = sendMidi(filepath, instrument)
 
-        # Create sheet music PDF
         create_sheet_music_from_notes(note_values, os.path.join(OUTPUT_FOLDER, "sheet_music.pdf"))
 
-        # Move MIDI file to the outputs folder
         dest_item = os.path.join(OUTPUT_FOLDER, midi_path)
         shutil.move(midi_path, dest_item)
 
-        # Move all files from the outputs folder to the public folder
         for item in os.listdir(OUTPUT_FOLDER):
             src_item = os.path.join(OUTPUT_FOLDER, item)
             dest_item = os.path.join(PUBLIC_FOLDER, item)

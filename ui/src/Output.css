@@ -7,7 +7,7 @@
 }
 
 .download-button {
-  background-color: #4CAF50; /* Green */
+  background-color: #00bcd4; 
   color: white;
   padding: 12px 24px;
   font-size: 16px;
@@ -20,28 +20,25 @@
 }
 
 .download-button:hover {
-  background-color: #45a049; /* Darker green */
+  background-color: #21a7b8;
 }
 
-/* Button styles for PDF */
 .pdf-button {
-  background-color: #2196F3; /* Blue */
+  background-color: #00bcd4;
 }
 
 .pdf-button:hover {
-  background-color: #1976D2; /* Darker blue */
+  background-color: #21a7b8;
 }
 
-/* Button styles for MIDI */
 .midi-button {
-  background-color: #f44336; /* Red */
+  background-color: #00bcd4; 
 }
 
 .midi-button:hover {
-  background-color: #e53935; /* Darker red */
+  background-color: #21a7b8; 
 }
 
-/* Error message styling */
 .error-message {
   color: red;
   font-size: 14px;
