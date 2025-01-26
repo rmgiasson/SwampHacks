@@ -1,6 +1,6 @@
 import './App.css';
 import Input from './Input';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Output from './Output';
 import Piano from './piano';
 import { Viewer } from '@react-pdf-viewer/core';
@@ -15,11 +15,50 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 function App() {
   const [isPianoVisible, setIsPianoVisible] = useState(true);
   const [pdfFileUrl, setPdfFileUrl] = useState(null); // State for PDF file URL
+  const [midiFileUrl, setMidiFileUrl] = useState(null); // State for MIDI file URL
 
   // Toggle Piano visibility
   const togglePiano = () => {
     setIsPianoVisible(!isPianoVisible);
   };
+
+  // Check if the sheet_music.pdf file exists and update the state
+  useEffect(() => {
+    const checkPdfFile = async () => {
+      try {
+        const response = await fetch('/sheet_music.pdf');
+        if (response.ok) {
+          setPdfFileUrl('/sheet_music.pdf');
+        } else {
+          setPdfFileUrl(null);
+        }
+      } catch (error) {
+        setPdfFileUrl(null);
+        console.error('Error checking for sheet_music.pdf:', error);
+      }
+    };
+
+    checkPdfFile();
+  }, []);
+
+  // Check if the output.midi file exists and update the state
+  useEffect(() => {
+    const checkMidiFile = async () => {
+      try {
+        const response = await fetch('/output.midi');
+        if (response.ok) {
+          setMidiFileUrl('/output.midi');
+        } else {
+          setMidiFileUrl(null);
+        }
+      } catch (error) {
+        setMidiFileUrl(null);
+        console.error('Error checking for output.midi:', error);
+      }
+    };
+
+    checkMidiFile();
+  }, []);
 
   // Function to handle file submission and update the PDF file URL
   const handleFileSubmission = async (file, instrument) => {
@@ -37,15 +76,7 @@ function App() {
       if (!response.ok) {
         throw new Error('Failed to upload file');
       }
-
-      // Assuming the backend returns the filename or identifier
-      const { message } = await response.json();
-
-      // Generate the URL for the PDF
-      const pdfUrl = `http://localhost:3000/${message}.pdf`;  // Serve from public/ folder
-
-      // Update the state with the new PDF URL
-      setPdfFileUrl(pdfUrl);
+      
     } catch (error) {
       console.error('Error during file submission:', error);
     }
@@ -64,15 +95,29 @@ function App() {
               <p>No PDF to display. Submit a file to generate the sheet music.</p>
             )}
           </div>
-          <Output fileName="star" />
+          <Output fileId={fileId} />
         </div>
         <div className="App-header2">
           <button onClick={togglePiano} className="toggle-piano-button">
             {isPianoVisible ? 'Hide Piano' : 'Show Piano'}
           </button>
-          {isPianoVisible && <Piano />}
+          {isPianoVisible && <Piano midiFileUrl={midiFileUrl} />}
         </div>
       </header>
+
+      {/* Allow users to download PDF and WAV files dynamically */}
+      <div className="file-links">
+        {pdfFileUrl ? (
+          <div>
+            <h3>PDF</h3>
+            <a href={pdfFileUrl} download={`sheet_music.pdf`}>
+              Download PDF
+            </a>
+          </div>
+        ) : (
+          <p>No PDF to display. Submit a file to generate the sheet music.</p>
+        )}
+      </div>
     </div>
   );
 }

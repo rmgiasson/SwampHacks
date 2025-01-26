@@ -6,6 +6,7 @@
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "cra-template": "1.2.0",
+    "file-saver": "^2.0.5",
     "midi-player-js": "^2.0.16",
     "pdfjs": "^2.5.3",
     "pdfjs-dist": "^4.8.69",

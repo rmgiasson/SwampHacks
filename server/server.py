@@ -1,71 +1,61 @@
 from flask import Flask, request, send_file, jsonify
 import os
 from flask_cors import CORS
+from convert import create_sheet_music_from_notes
+from nolan import sendMidi
+import shutil
 
 app = Flask(__name__)
 CORS(app)
 
 UPLOAD_FOLDER = 'uploads/'
 OUTPUT_FOLDER = 'outputs/'
+PUBLIC_FOLDER = '../ui/public/'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    try:
-        if 'file' not in request.files or 'instrument' not in request.form:
-            return jsonify({'error': 'Missing file or instrument'}), 400
+    if 'file' not in request.files or 'instrument' not in request.form:
+        return jsonify({'error': 'Missing file or instrument'}), 400
 
-        file = request.files['file']
-        instrument = request.form['instrument']
+    file = request.files['file']
+    instrument = request.form['instrument']
 
-        if file.filename == '':
-            return jsonify({'error': 'No selected file'}), 400
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
 
-        filepath = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(filepath)
+    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(filepath)
 
-        print(f"Description received: {instrument}")
+    print(f"Description received: {instrument}")
 
-        file_id = 'star'  # Static ID as per your requirement
-        file_path_pdf = os.path.join(OUTPUT_FOLDER, f'{file_id}.pdf')
-        file_path_wav = os.path.join(OUTPUT_FOLDER, f'{file_id}.wav')
+    # filepath, instrument
 
-        # Log paths for debugging
-        print(f"Generated PDF path: {file_path_pdf}")
-        print(f"Generated WAV path: {file_path_wav}")
+    # create the midi file
+    note_values, midi_path = sendMidi(filepath)
 
-        # Placeholder content generation (you can replace with actual file generation logic)
-        with open(file_path_pdf, 'wb') as f:
-            f.write(b"PDF content for 'star'")
+    print('Created midi')
 
-        with open(file_path_wav, 'wb') as f:
-            f.write(b"WAV content for 'star'")
+    # create pdf file
+    create_sheet_music_from_notes(note_values, os.path.join(OUTPUT_FOLDER, "sheet_music.pdf"))
 
-        return jsonify({'message': 'star'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    print('Made sheet music')
 
-@app.route('/download/<file_id>', methods=['GET'])
-def download_file(file_id):
-    try:
-        # Adjusted to directly use the static 'star' file_id for testing
-        if file_id != 'star':
-            return jsonify({'error': 'File not found'}), 404
-        
-        file_path = os.path.join(OUTPUT_FOLDER, f'{file_id}')
+    # download midi locally
+    dest_item = os.path.join(OUTPUT_FOLDER, midi_path)
+    shutil.move(midi_path, dest_item)
 
-        print(f"File requested: {file_id}")
-        print(f"Checking if file exists at {file_path}")
+    # transfer all of the shit to public
+    for item in os.listdir(OUTPUT_FOLDER):
+        src_item = os.path.join(OUTPUT_FOLDER, item)
+        dest_item = os.path.join(PUBLIC_FOLDER, item)
+        shutil.move(src_item, dest_item)
+    
+    print('Finished moving')
 
-        # Check if PDF exists
-        if os.path.exists(file_path):
-            print("Found PDF file!")
-            return send_file(file_path, as_attachment=True)
-        
-        return jsonify({'error': 'File not found'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(port=3001, debug=True)
