@@ -7,6 +7,9 @@ const Output = ({ audioFile, pdfFile }) => {
             <a href={audioFile} download>
                 Download Audio File
             </a>
+            <a href={pdfFile} download>
+                Download PDF File
+            </a>
         </div>
       );
     };

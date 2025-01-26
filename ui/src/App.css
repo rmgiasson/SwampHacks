@@ -40,6 +40,15 @@
     color: white;
   }
 
+  .pdf-viewer-container {
+    width: 100%; /* Or a fixed width like 600px */
+    max-width: 800px; /* Adjust as needed */
+    height: 500px; /* Set the desired height */
+    margin: 0 auto; /* Center it horizontally */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    overflow: hidden; /* Hide overflow to prevent layout issues */
+  }
+
 .App-link {
   color: #61dafb;
 }

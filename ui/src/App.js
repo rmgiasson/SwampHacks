@@ -3,6 +3,15 @@ import Input from './Input';
 import React, { useState } from 'react';
 import Output from './Output';
 import Piano from'./piano';
+import { Viewer } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
+
 
 function App() {
   const [isPianoVisible, setIsPianoVisible] = useState(true);
@@ -24,6 +33,9 @@ function App() {
             {isPianoVisible ? 'Hide Piano' : 'Show Piano'}
           </button>
           {isPianoVisible && <Piano />}
+        </div>
+        <div className="pdf-viewer-container">
+          <Viewer fileUrl="/final_review.pdf" />
         </div>
       </header>
     </div>

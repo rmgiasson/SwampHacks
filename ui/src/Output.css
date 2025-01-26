@@ -17,6 +17,7 @@
   text-decoration: none;
   border-radius: 5px;
   font-size: 16px;
+  margin: 3px;
   transition: background-color 0.3s ease;
 }
 
