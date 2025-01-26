@@ -51,7 +51,28 @@
     justify-content: center;
     display: flex;
     color: white;
+    margin-right: 5%;
   }
+
+    .toggle-piano-button{
+      background-color: #00bcd4;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+      margin: 3px;
+      transition: background-color 0.3s ease;
+      text-align: center;
+      margin: 20px;
+      margin-left: 3%;
+      margin-right: auto;
+      display: flex;
+      padding: 15px 20px;
+    }
+
+    .toggle-piano-button:hover{
+      background-color: #21a7b8;
+    }
 
 .App-link {
   color: #61dafb;

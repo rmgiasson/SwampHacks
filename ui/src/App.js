@@ -32,8 +32,8 @@ function App() {
           <Output audioFile = "ohio.mp3" pdfFile = "Amongus.pdf"/>
         </div>
         <div className="App-header2">
-          <button onClick={togglePiano}>
-            {isPianoVisible ? 'Hide Piano' : 'Show Piano'}
+          <button onClick={togglePiano} className="toggle-piano-button" >
+              {isPianoVisible ? 'Hide Piano' : 'Show Piano'}
           </button>
           {isPianoVisible && <Piano />}
         </div>
